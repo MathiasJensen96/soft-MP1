@@ -1,9 +1,10 @@
 import json
+import timeit
 
 import requests
 import zeep
 from bs4 import BeautifulSoup
-# from genderize import Genderize
+from genderize import Genderize
 
 
 def main():
@@ -20,10 +21,11 @@ def main():
     
     # TODO: Batch request to genderize.io by country
     
+    gender_client = Genderize()
     for person, country in zip(persons, countries):
         country_code = country['countryCode'] if country['status'] == "success" else "US"
         flag = flags[country_code]
-        gender = find_gender(country_code, person['first_name'])
+        gender = gender_client.get1(person['first_name'], country_id=country_code)
 
         gender_prefix = ""
         if gender['gender'] == "female":
@@ -95,4 +97,5 @@ def find_gender(country_code, name):
         print("Gender didnt return a response")
 
 if __name__ == "__main__":    
-    main()
+    print(timeit.timeit(main, number=1))
+    # main()
