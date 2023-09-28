@@ -15,6 +15,24 @@ def main():
 
         print(country," | \n", flag," | \n", gender,)
 
+        gender_prefix = ""
+        if gender['gender'] == "female":
+            gender_prefix = "Ms."
+        elif gender['gender'] == "male":
+            gender_prefix = "Mr."
+        else:
+            gender_prefix = "Mr. or Ms."
+
+        # simulation of sending email with Mr. or Ms. their name and the flag of their country as picture attachment
+        print(f"""Hello {gender_prefix} {person['first_name']}, 
+              We would like to invite you to this event ... 
+              at this location ...
+              at this time ...
+              
+              Best regards us :)
+              {flag}
+              """)
+
 
 def find_country(ip):
     ip_url = f"http://ip-api.com/json/{ip}?fields=country,countryCode"
