@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 
 def main():
-    with open('MOCK_DATA_TEST.json') as json_file:
+    with open('test.json') as json_file:
         persons = json.load(json_file)
 
     for person in persons:      #Person looks like this {"first_name":"Rand","email":"rcastellanos0@answers.com","ip_address":"40.135.99.35"}
@@ -13,7 +13,7 @@ def main():
         flag = find_flag(country['countryCode'])
         gender = find_gender(country['countryCode'], person['first_name'])
 
-        print(country," | \n", flag," | \n", gender,)
+        #print(country," | \n", flag," | \n", gender,)
 
         gender_prefix = ""
         if gender['gender'] == "female":
@@ -24,7 +24,8 @@ def main():
             gender_prefix = "Mr. or Ms."
 
         # simulation of sending email with Mr. or Ms. their name and the flag of their country as picture attachment
-        print(f"""Hello {gender_prefix} {person['first_name']}, 
+        print(f"""
+              Hello {gender_prefix} {person['first_name']}, 
               We would like to invite you to this event ... 
               at this location ...
               at this time ...
