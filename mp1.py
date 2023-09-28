@@ -8,11 +8,16 @@ from bs4 import BeautifulSoup
 def main():
     with open('test.json') as json_file:
         persons = json.load(json_file)
+        
+    ips = [person['ip_address'] for person in persons]
+    countries = find_countries(ips)
+    
+    # TODO: fetch all flags and cache in dict.
 
-    for person in persons:      #Person looks like this {"first_name":"Rand","email":"rcastellanos0@answers.com","ip_address":"40.135.99.35"}
-        country = find_country(person['ip_address'])
-        flag = find_flag_zeep(country['countryCode'])
-        gender = find_gender(country['countryCode'], person['first_name'])
+    for person, country in zip(persons, countries):      #Person looks like this {"first_name":"Rand","email":"rcastellanos0@answers.com","ip_address":"40.135.99.35"}
+        country_code = country['countryCode'] if country['status'] == "success" else "US"
+        flag = find_flag_zeep(country_code)
+        gender = find_gender(country_code, person['first_name'])
 
         #print(country," | \n", flag," | \n", gender,)
 
@@ -45,6 +50,13 @@ def find_country(ip):
     except:
         print("IP didn't return af response")
 
+# Batch request to get all countries at once
+# Max 100 ips per request
+def find_countries(ips):
+    url = "http://ip-api.com/batch"
+    r = requests.post(url, json=ips)
+    r.raise_for_status()
+    return r.json()
 
 def find_flag(country_code):
     flag_url = "http://webservices.oorsprong.org/websamples.countryinfo/CountryInfoService.wso"
