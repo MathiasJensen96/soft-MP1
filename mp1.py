@@ -3,11 +3,13 @@ import json
 import requests
 import zeep
 from bs4 import BeautifulSoup
+# from genderize import Genderize
 
 
 def main():
     with open('test.json') as json_file:
         persons = json.load(json_file)
+        # Person looks like this {"first_name":"Rand","email":"rcastellanos0@answers.com","ip_address":"40.135.99.35"}
     
     # find countries and flags
     ips = [person['ip_address'] for person in persons]
@@ -15,13 +17,13 @@ def main():
     unique_countries = {country['countryCode'] for country in countries if country['status'] == "success"}
     unique_countries.add("US")
     flags = {country: find_flag_zeep(country) for country in unique_countries}
-
-    for person, country in zip(persons, countries):      #Person looks like this {"first_name":"Rand","email":"rcastellanos0@answers.com","ip_address":"40.135.99.35"}
+    
+    # TODO: Batch request to genderize.io by country
+    
+    for person, country in zip(persons, countries):
         country_code = country['countryCode'] if country['status'] == "success" else "US"
         flag = flags[country_code]
         gender = find_gender(country_code, person['first_name'])
-
-        #print(country," | \n", flag," | \n", gender,)
 
         gender_prefix = ""
         if gender['gender'] == "female":
@@ -46,7 +48,7 @@ def find_country(ip):
     try:
         response = requests.request('GET', ip_url).json()
         if response:
-            return response #Response looks like this {"country": "United States","countryCode": "US",}
+            return response # Response looks like this {"country": "United States","countryCode": "US",}
     except:
         print("IP didn't return af response")
 
@@ -91,7 +93,6 @@ def find_gender(country_code, name):
             return response #Response looks like this {'count': 69, 'name': 'Valaria', 'country_id': 'US', 'gender': 'female', 'probability': 1.0}
     except:
         print("Gender didnt return a response")
-    
 
-
-main()
+if __name__ == "__main__":    
+    main()
