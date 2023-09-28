@@ -8,15 +8,17 @@ from bs4 import BeautifulSoup
 def main():
     with open('test.json') as json_file:
         persons = json.load(json_file)
-        
+    
+    # find countries and flags
     ips = [person['ip_address'] for person in persons]
     countries = find_countries(ips)
-    
-    # TODO: fetch all flags and cache in dict.
+    unique_countries = {country['countryCode'] for country in countries if country['status'] == "success"}
+    unique_countries.add("US")
+    flags = {country: find_flag_zeep(country) for country in unique_countries}
 
     for person, country in zip(persons, countries):      #Person looks like this {"first_name":"Rand","email":"rcastellanos0@answers.com","ip_address":"40.135.99.35"}
         country_code = country['countryCode'] if country['status'] == "success" else "US"
-        flag = find_flag_zeep(country_code)
+        flag = flags[country_code]
         gender = find_gender(country_code, person['first_name'])
 
         #print(country," | \n", flag," | \n", gender,)
