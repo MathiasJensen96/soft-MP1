@@ -1,4 +1,5 @@
 # soft-MP1
+Af Kasper, Mathias og Mads
 
 Programmet er mp1.py
 - Når den bliver kørt så åbner programmet en json fil med personer i og ligger dem i en variable.
