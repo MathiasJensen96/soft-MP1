@@ -8,7 +8,7 @@ def main():
     with open('MOCK_DATA_TEST.json') as json_file:
         persons = json.load(json_file)
 
-    for person in persons:
+    for person in persons:      #Person looks like this {"first_name":"Rand","email":"rcastellanos0@answers.com","ip_address":"40.135.99.35"}
         country = find_country(person['ip_address'])
         flag = find_flag(country['countryCode'])
         gender = find_gender(country['countryCode'], person['first_name'])
@@ -21,7 +21,7 @@ def find_country(ip):
     try:
         response = requests.request('GET', ip_url).json()
         if response:
-            return response #Response = {"country": "United States","countryCode": "US",}
+            return response #Response looks like this {"country": "United States","countryCode": "US",}
     except:
         print("IP didn't return af response")
 
@@ -41,7 +41,7 @@ def find_flag(country_code):
         response = requests.request("POST", flag_url, headers=headers, data=payload).text
         soup = BeautifulSoup(response, features="xml").find("m:CountryFlagResult").string
         if soup:
-            return soup #Soup = http://www.oorsprong.org/WebSamples.CountryInfo/Flags/USA.jpg OBS!! URL FOR THE FLAG OF THE COUNTRY
+            return soup #Soup looks like this http://www.oorsprong.org/WebSamples.CountryInfo/Flags/USA.jpg   
     except:
         print("Flag didnt return a response")
 
@@ -51,7 +51,7 @@ def find_gender(country_code, name):
     try:
         response = requests.request('GET', gender_url).json()
         if response:
-            return response #Response = {'count': 69, 'name': 'Valaria', 'country_id': 'US', 'gender': 'female', 'probability': 1.0}
+            return response #Response looks like this {'count': 69, 'name': 'Valaria', 'country_id': 'US', 'gender': 'female', 'probability': 1.0}
     except:
         print("Gender didnt return a response")
     
