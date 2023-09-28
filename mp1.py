@@ -1,6 +1,7 @@
-
 import json
+
 import requests
+import zeep
 from bs4 import BeautifulSoup
 
 
@@ -10,7 +11,7 @@ def main():
 
     for person in persons:      #Person looks like this {"first_name":"Rand","email":"rcastellanos0@answers.com","ip_address":"40.135.99.35"}
         country = find_country(person['ip_address'])
-        flag = find_flag(country['countryCode'])
+        flag = find_flag_zeep(country['countryCode'])
         gender = find_gender(country['countryCode'], person['first_name'])
 
         #print(country," | \n", flag," | \n", gender,)
@@ -64,6 +65,11 @@ def find_flag(country_code):
     except:
         print("Flag didnt return a response")
 
+def find_flag_zeep(country_code):
+    wsdl = "http://webservices.oorsprong.org/websamples.countryinfo/CountryInfoService.wso?WSDL"
+    client = zeep.Client(wsdl=wsdl)
+    result = client.service.CountryFlag(country_code)
+    return result
 
 def find_gender(country_code, name):
     gender_url = f"https://api.genderize.io?name={name}&country_id={country_code}"
